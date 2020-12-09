@@ -959,11 +959,11 @@ contract ConfidentialMultipartyRegisteredEDeliveryWithoutTTP {
     enum State {notexists, created, challenged, responsed, accepted, finished, cancelled, rejected }
 
     
-        bytes z1;
-        bytes z2;
-        bytes yb;
-        bytes c;
-        bytes w;
+        bytes public z1;
+        bytes public z2;
+        bytes public yb;
+        bytes public c;
+        bytes public w;
         struct estados{
         State state;
         }
@@ -1014,7 +1014,7 @@ contract ConfidentialMultipartyRegisteredEDeliveryWithoutTTP {
         
     }
     
-    function response(address _receiver, bytes _w) public{
+    function response(bytes _w) public{
         require(now < start+term,"The timeout has been reached");
         require(sender==msg.sender,"Who try to response the challenge is not the original proposer");
         require(estado[address(this)].state==State.challenged,"The process is not in the adequate state");
@@ -1125,9 +1125,9 @@ contract ConfidentialMultipartyRegisteredEDeliveryWithoutTTP {
             return "not exists";
         } else if (estado[_contract].state==State.created) {
             return "created";
-        }  else if (estado[_contract].state==State.created) {
+        }  else if (estado[_contract].state==State.challenged) {
             return "challenged";
-        } else if (estado[_contract].state==State.created) {
+        } else if (estado[_contract].state==State.responsed) {
             return "responsed";
         }else if (estado[_contract].state==State.cancelled) {
             return "cancelled";

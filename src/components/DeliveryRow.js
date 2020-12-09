@@ -23,7 +23,7 @@ class DeliveryRow extends Component {
     let deliveryContract = notification(this.props.delivery);
     let receiver = await deliveryContract.methods.receiver().call();
     let start = await deliveryContract.methods.start().call();
-    let state = await deliveryContract.methods.getState().call();
+    let state = await deliveryContract.methods.getState(this.props.delivery).call();
     const accounts = await web3.eth.getAccounts();
     let sender = await deliveryContract.methods.sender.call();
     let d = new Date(0);
@@ -100,9 +100,7 @@ class DeliveryRow extends Component {
       // Generation of z2 = xb·ya^s mod p
       z2 = xb.multiply(ya.modPow(s, p));
       
-      await deliveryContract.methods
-        .challenge("0x"+z1.toString(16), "0x"+z2.toString(16), "0x"+yb.toString(16), "0x"+c.toString(16))
-        .send({ from: accounts[0] });
+      await deliveryContract.methods.challenge("0x"+z1.toString(16), "0x"+z2.toString(16), "0x"+yb.toString(16), "0x"+c.toString(16)).send({ from: accounts[0] });
 
       // Refresh
       alert('Contract challenged!');
@@ -130,7 +128,6 @@ class DeliveryRow extends Component {
       // La xa la tendríamos que obtener como propiedad desde deliveryNew
       let xa = bigInt(variables.xa.substr(2), 16)
 
-      let receiver = await deliveryContract.methods.receiver.call();
       let p = bigInt((await deliveryContract.methods.p().call()).substr(2), 16);
       let c = bigInt((await deliveryContract.methods.c().call()).substr(2), 16);
       let z1 = bigInt((await deliveryContract.methods.z1().call()).substr(2),16);
@@ -144,9 +141,7 @@ class DeliveryRow extends Component {
       
       w =  r.add(c.multiply(xb.mod(p)));
       
-      await deliveryContract.methods
-        .response(receiver, "0x"+w.toString(16))
-        .send({ from: accounts[0] });
+      await deliveryContract.methods.response("0x"+w.toString(16)).send({ from: accounts[0] });
 
       // Refresh
       alert('Contract responsed!');
@@ -238,7 +233,7 @@ class DeliveryRow extends Component {
                      
                      this.state.state==='accepted'?
                      (
-                      <Button animated='vertical' color='blue' onClick={() => this.onFinish(this.props.delivery)} disabled={this.state.account!==this.state.sender} loading={this.state.loading}>
+                      <Button animated='vertical' color='blue' onClick={() => this.onFinish(this.props.delivery)} /*disabled={this.state.account!==this.state.sender}*/ loading={this.state.loading}>
                         <Button.Content hidden>Finish</Button.Content>
                         <Button.Content visible>
                           <Icon name='finish' />
@@ -256,7 +251,7 @@ class DeliveryRow extends Component {
                        ) : (
                          this.state.state==='challenged'?
                          (
-                          <Button animated='vertical' color='blue' onClick={() => this.onResponse(this.props.delivery)} disabled={this.state.account!==this.state.sender} loading={this.state.loading}>
+                          <Button animated='vertical' color='blue' onClick={() => this.onResponse(this.props.delivery)} /*disabled={this.state.account!==this.state.sender}*/ loading={this.state.loading}>
                           <Button.Content hidden>Response</Button.Content>
                           <Button.Content visible>
                             <Icon name='response' />
