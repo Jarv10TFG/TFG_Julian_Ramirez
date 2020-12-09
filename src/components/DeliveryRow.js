@@ -13,15 +13,17 @@ class DeliveryRow extends Component {
     receiver: '',
     start: '',
     state: '',
+    account: '',
+    sender: '',
     loading: false,
     errorMessage: '',
   };
 
   componentDidMount = async () => {
     let deliveryContract = notification(this.props.delivery);
-    let receiver = await deliveryContract.methods.receiver.call();
+    let receiver = await deliveryContract.methods.receiver().call();
     let start = await deliveryContract.methods.start().call();
-    let state = await deliveryContract.methods.getState(this.props.delivery).call();
+    let state = await deliveryContract.methods.getState().call();
     const accounts = await web3.eth.getAccounts();
     let sender = await deliveryContract.methods.sender.call();
     let d = new Date(0);
