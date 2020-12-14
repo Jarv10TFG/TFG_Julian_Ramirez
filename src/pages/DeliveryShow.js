@@ -19,8 +19,7 @@ class DeliveryShow extends Component {
     c1: '',
     c2: '',
     ya: '',
-    term1: '',
-    term2: '',
+    term: '',
     start: '',
     z1: '',
     z2: '',
@@ -44,24 +43,20 @@ class DeliveryShow extends Component {
       let deposit = await web3.eth.getBalance(address)
 
       let sender = await deliveryContract.methods.sender().call();
-      let receiver = await deliveryContract.methods.receivers(0).call();
-      let state = await deliveryContract.methods.getState(receiver).call();
+      let receiver = await deliveryContract.methods.receiver().call();
+      let state = await deliveryContract.methods.getState(address).call();
       let g = await deliveryContract.methods.g().call();
       let p = await deliveryContract.methods.p().call();
       let c1 = await deliveryContract.methods.c1().call();
       let c2 = await deliveryContract.methods.c2().call();
       let ya = await deliveryContract.methods.ya().call();
-      let term1 = await deliveryContract.methods.term1().call();
-      let term2 = await deliveryContract.methods.term2().call();
+      let term = await deliveryContract.methods.term().call();
       let start = await deliveryContract.methods.start().call();
-
-      let receiversState = await deliveryContract.methods.receiversState(receiver).call();
-
-      let z1 = receiversState.z1;
-      let z2 = receiversState.z2;
-      let yb = receiversState.yb;
-      let c = receiversState.c;
-      let w = receiversState.w;
+      let z1 = await deliveryContract.methods.z1().call();
+      let z2 = await deliveryContract.methods.z2().call();
+      let yb = await deliveryContract.methods.yb().call();
+      let c = await deliveryContract.methods.c().call();
+      let w = await deliveryContract.methods.w().call();
       let message = '';
 
       let d = new Date(0);
@@ -95,8 +90,7 @@ class DeliveryShow extends Component {
         c1: c1,
         c2: c2,
         ya: ya,
-        term1: term1,
-        term2: term2,
+        term: term,
         start: start,
         z1: z1,
         z2: z2,
@@ -156,20 +150,32 @@ class DeliveryShow extends Component {
           <Form.Field>
             <label>State</label>
             {
-              this.state.state==='finished'? 
-              (
-              < Label as='a' color='teal' horizontal>Finished</Label>
-              ) : (
-                this.state.state==='accepted'? (
-                  <Label as='a' color='yellow' horizontal>Accepted</Label>
-                ) : (
-                  this.state.state==='created'? (
-                    <Label as='a' horizontal>Created</Label>
-                  ) : (
-                    <Label as='a' horizontal>-</Label>
-                  )
-                )
-              )
+                 this.state.state==='finished'? 
+                   (
+                    <Label as='a' color='teal' horizontal>Finished</Label>
+                   ) : (
+                    this.state.state==='accepted'?
+                    (
+                      <Label as='a' color='yellow' horizontal>Accepted</Label>
+                    ) : (
+                      this.state.state==='responsed'? 
+                      (
+                        <Label as='a' horizontal>Responsed</Label>
+                      ) : (
+                        this.state.state==='challenged'?
+                        (
+                          <Label as='a' color='red' horizontal>Challenged</Label>
+                        ) : (
+                          this.state.state==='created'?
+                          (
+                            <Label as='a' color='green' horizontal>Created</Label>
+                          ):(
+                            <Label as='a' horizontal>-</Label>
+                          )
+                        )
+                      )
+                    )
+                   )
             }
           </Form.Field>
 
@@ -222,22 +228,12 @@ class DeliveryShow extends Component {
           </Form.Field>
 
           <Form.Field>
-            <label>Term 1</label>
+            <label>Term </label>
             <Input
               readOnly
               label="seconds"
               labelPosition="right"
               value={this.state.term1}
-            />
-          </Form.Field>
-
-          <Form.Field>
-            <label>Term 2</label>
-            <Input
-              readOnly
-              label="seconds"
-              labelPosition="right"
-              value={this.state.term2}
             />
           </Form.Field>
 
