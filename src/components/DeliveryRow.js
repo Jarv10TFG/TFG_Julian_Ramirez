@@ -233,7 +233,7 @@ class DeliveryRow extends Component {
                      
                      this.state.state==='accepted'?
                      (
-                      <Button animated='vertical' color='blue' onClick={() => this.onFinish(this.props.delivery)} /*disabled={this.state.account!==this.state.sender}*/ loading={this.state.loading}>
+                      <Button animated='vertical' color='green' onClick={() => this.onFinish(this.props.delivery)} /*disabled={this.state.account!==this.state.sender}*/ loading={this.state.loading}>
                         <Button.Content hidden>Finish</Button.Content>
                         <Button.Content visible>
                           <Icon name='finish' />
@@ -242,7 +242,7 @@ class DeliveryRow extends Component {
                      ) : (
                        this.state.state==='responsed'? 
                        (
-                        <Button animated='vertical' color='blue' onClick={() => this.onAccept(this.props.delivery)} disabled={this.state.account!==this.state.receiver} loading={this.state.loading}>
+                        <Button animated='vertical' color='green' onClick={() => this.onAccept(this.props.delivery)} disabled={this.state.account!==this.state.receiver} loading={this.state.loading}>
                         <Button.Content hidden>Accept</Button.Content>
                         <Button.Content visible>
                           <Icon name='accept' />
@@ -251,7 +251,7 @@ class DeliveryRow extends Component {
                        ) : (
                          this.state.state==='challenged'?
                          (
-                          <Button animated='vertical' color='blue' onClick={() => this.onResponse(this.props.delivery)} /*disabled={this.state.account!==this.state.sender}*/ loading={this.state.loading}>
+                          <Button animated='vertical' color='green' onClick={() => this.onResponse(this.props.delivery)} /*disabled={this.state.account!==this.state.sender}*/ loading={this.state.loading}>
                           <Button.Content hidden>Response</Button.Content>
                           <Button.Content visible>
                             <Icon name='response' />
@@ -260,14 +260,14 @@ class DeliveryRow extends Component {
                          ) : (
                            this.state.state==='created'?
                            (
-                            <Button animated='vertical' color='blue' onClick={() => this.onChallenge(this.props.delivery)} disabled={this.state.account!==this.state.receiver} loading={this.state.loading}>
+                            <Button animated='vertical' color='green' onClick={() => this.onChallenge(this.props.delivery)} disabled={this.state.account!==this.state.receiver} loading={this.state.loading}>
                             <Button.Content hidden>Challenge</Button.Content>
                             <Button.Content visible>
                               <Icon name='challenge' />
                             </Button.Content>
                           </Button>
                            ):(
-                            <Button animated='vertical' color='blue' onClick={() => this.onView} disabled loading={this.state.loading}>
+                            <Button animated='vertical' color='green' onClick={() => this.onView} disabled loading={this.state.loading}>
                             <Button.Content hidden>Finished or not created</Button.Content>
                             <Button.Content visible>
                               <Icon name='send' />
@@ -302,7 +302,7 @@ class DeliveryRow extends Component {
                     )*/
                   }
                   <Link to={"/deliveries/"+this.props.delivery}>
-                    <Button animated='vertical' color='blue' onClick={this.onView}>
+                    <Button animated='vertical' color='green' onClick={this.onView}>
                       <Button.Content hidden>View</Button.Content>
                       <Button.Content visible>
                         <Icon name='eye' />

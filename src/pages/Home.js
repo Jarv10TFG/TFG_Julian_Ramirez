@@ -107,9 +107,11 @@ class Home extends Component {
                 </Table>
                 <Link to="/deliveries/new">
                     <Button
+                        
                         content = "Proponer nuevo contrato"
                         icon = "add circle"
                         primary = {true}
+                        color='green'
                         />
                 </Link>
             </div>
