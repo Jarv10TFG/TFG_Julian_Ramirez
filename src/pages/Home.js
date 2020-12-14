@@ -77,37 +77,37 @@ class Home extends Component {
         // Done
         return (
             <div>
-                <h3><Icon name='sign in alternate' circular />&nbsp;Received deliveries</h3>
+                <h3><Icon name='sign in alternate' circular />&nbsp;Propuestas de contrato recibidas</h3>
                 <Table fixed>
                     <Table.Header>
                         <Table.Row>
                             <Table.HeaderCell>#</Table.HeaderCell>
-                            <Table.HeaderCell>Address</Table.HeaderCell>
-                            <Table.HeaderCell>Sender</Table.HeaderCell>
-                            <Table.HeaderCell>Timestamp</Table.HeaderCell>
-                            <Table.HeaderCell>State</Table.HeaderCell>
-                            <Table.HeaderCell>Action</Table.HeaderCell>
+                            <Table.HeaderCell>Dirección del SmartContract</Table.HeaderCell>
+                            <Table.HeaderCell>Proponente</Table.HeaderCell>
+                            <Table.HeaderCell>Fecha de inicio</Table.HeaderCell>
+                            <Table.HeaderCell>Estado</Table.HeaderCell>
+                            <Table.HeaderCell>Acción</Table.HeaderCell>
                         </Table.Row>
                     </Table.Header>
                     <Table.Body>{this.renderDeliveryRows(false)}</Table.Body>
                 </Table>
-                <h3><Icon name='sign out alternate' circular />&nbsp;Sent deliveries</h3>
+                <h3><Icon name='sign out alternate' circular />&nbsp;Contratos propuestos</h3>
                 <Table fixed>
                     <Table.Header>
                         <Table.Row>
                             <Table.HeaderCell>#</Table.HeaderCell>
-                            <Table.HeaderCell>Address</Table.HeaderCell>
-                            <Table.HeaderCell>Receiver</Table.HeaderCell>
-                            <Table.HeaderCell>Timestamp</Table.HeaderCell>
-                            <Table.HeaderCell>State</Table.HeaderCell>
-                            <Table.HeaderCell>Action</Table.HeaderCell>
+                            <Table.HeaderCell>Dirección del SmartContract</Table.HeaderCell>
+                            <Table.HeaderCell>Receptor</Table.HeaderCell>
+                            <Table.HeaderCell>Fecha de inicio</Table.HeaderCell>
+                            <Table.HeaderCell>Estado</Table.HeaderCell>
+                            <Table.HeaderCell>Acción</Table.HeaderCell>
                         </Table.Row>
                     </Table.Header>
                     <Table.Body>{this.renderDeliveryRows(true)}</Table.Body>
                 </Table>
                 <Link to="/deliveries/new">
                     <Button
-                        content = "Send New Delivery"
+                        content = "Proponer nuevo contrato"
                         icon = "add circle"
                         primary = {true}
                         />

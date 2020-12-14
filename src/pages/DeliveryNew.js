@@ -55,7 +55,7 @@ class DeliveryNew extends Component {
             .send({ from: accounts[0], value: this.state.deposit });
 
           
-        alert('Delivery created!');
+        alert('¡Contrato creado!');
         // Refresh, using withRouter
         this.props.history.push('/');
     } catch (err) {
@@ -69,11 +69,11 @@ class DeliveryNew extends Component {
   render() {
     return (
       <div>
-        <Link to='/'>Back</Link>
-        <h3>Send New Delivery</h3>
+        <Link to='/'>Atrás</Link>
+        <h3>Generar contrato</h3>
         <Form onSubmit={this.onSubmit} error={!!this.state.errorMessage}>
           <Form.Field>
-            <label>Receiver</label>
+            <label>Receptor del contrato</label>
             <Input
               value={this.state.receiver}
               onChange={event => this.setState({ receiver: event.target.value })}
@@ -81,7 +81,7 @@ class DeliveryNew extends Component {
           </Form.Field>
 
           <Form.Field>
-            <label>Message</label>
+            <label>Contenido del contrato</label>
             <Input
               value={this.state.message}
               onChange={event => this.setState({ message: event.target.value })}
@@ -89,9 +89,9 @@ class DeliveryNew extends Component {
           </Form.Field>
 
           <Form.Field>
-            <label>Term </label>
+            <label>Tiempo límite para firmar el contrato </label>
             <Input
-              label="seconds"
+              label="segundos"
               labelPosition="right"
               value={this.state.term}
               onChange={event => this.setState({ term: event.target.value })}
@@ -99,7 +99,7 @@ class DeliveryNew extends Component {
           </Form.Field>
 
           <Form.Field>
-            <label>Deposit</label>
+            <label>Deposito</label>
             <Input
               label="wei"
               labelPosition="right"
@@ -110,7 +110,7 @@ class DeliveryNew extends Component {
 
           <Message error header="ERROR" content={this.state.errorMessage} />
           <Button primary loading={this.state.loading}>
-            Send!
+            ¡Enviar!
           </Button>
         </Form>
       </div>

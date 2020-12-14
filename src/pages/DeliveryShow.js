@@ -120,11 +120,11 @@ class DeliveryShow extends Component {
         <Dimmer inverted active={this.state.loading}>
           <Loader inverted content='Loading...'></Loader>
         </Dimmer>
-        <Link to='/'>Back</Link>
-        <h3>Show Delivery</h3>
+        <Link to='/'>Atrás</Link>
+        <h3>Vista del contrato</h3>
         <Form onSubmit={this.onSubmit} error={!!this.state.errorMessage} hidden={this.state.loading}>
           <Form.Field>
-            <label>Address of Smart Contract</label>
+            <label>Dirección del Smart Contract</label>
             <Input
               readOnly
               value={this.state.address}
@@ -132,7 +132,7 @@ class DeliveryShow extends Component {
           </Form.Field>
 
           <Form.Field>
-            <label>Sender</label>
+            <label>Proponente</label>
             <Input
               readOnly
               value={this.state.sender}
@@ -140,7 +140,7 @@ class DeliveryShow extends Component {
           </Form.Field>
 
           <Form.Field>
-            <label>Receiver</label>
+            <label>Propuesto a: </label>
             <Input
               readOnly
               value={this.state.receiver}
@@ -148,27 +148,27 @@ class DeliveryShow extends Component {
           </Form.Field>
 
           <Form.Field>
-            <label>State</label>
+            <label>Estado</label>
             {
                  this.state.state==='finished'? 
                    (
-                    <Label as='a' color='teal' horizontal>Finished</Label>
+                    <Label as='a' color='teal' horizontal>Finalizado</Label>
                    ) : (
                     this.state.state==='accepted'?
                     (
-                      <Label as='a' color='yellow' horizontal>Accepted</Label>
+                      <Label as='a' color='yellow' horizontal>Aceptado</Label>
                     ) : (
                       this.state.state==='responsed'? 
                       (
-                        <Label as='a' horizontal>Responsed</Label>
+                        <Label as='a' horizontal>Respondido</Label>
                       ) : (
                         this.state.state==='challenged'?
                         (
-                          <Label as='a' color='red' horizontal>Challenged</Label>
+                          <Label as='a' color='red' horizontal>Retado</Label>
                         ) : (
                           this.state.state==='created'?
                           (
-                            <Label as='a' color='green' horizontal>Created</Label>
+                            <Label as='a' color='green' horizontal>Creado</Label>
                           ):(
                             <Label as='a' horizontal>-</Label>
                           )
@@ -228,17 +228,17 @@ class DeliveryShow extends Component {
           </Form.Field>
 
           <Form.Field>
-            <label>Term </label>
+            <label>Tiempo límite para firmar el contrato </label>
             <Input
               readOnly
-              label="seconds"
+              label="segundos"
               labelPosition="right"
-              value={this.state.term1}
+              value={this.state.term}
             />
           </Form.Field>
 
           <Form.Field>
-            <label>Start (Timestamp)</label>
+            <label>Fecha de inicio (Timestamp)</label>
             <Input
               readOnly
               value={this.state.start}
@@ -286,7 +286,7 @@ class DeliveryShow extends Component {
           </Form.Field>
 
           <Form.Field>
-            <label>Message</label>
+            <label>Contenido del contrato</label>
             <Input
               readOnly
               value={this.state.message}
@@ -294,7 +294,7 @@ class DeliveryShow extends Component {
           </Form.Field>
 
           <Form.Field>
-            <label>Deposit</label>
+            <label>Deposito</label>
             <Input
               label="wei"
               labelPosition="right"
@@ -304,7 +304,7 @@ class DeliveryShow extends Component {
 
           <Message error header="ERROR" content={this.state.errorMessage} />
           <Button primary loading={this.state.loading}>
-            Close
+            Cerrar
           </Button>
         </Form>
       </div>
