@@ -236,7 +236,7 @@ class DeliveryRow extends Component {
                       <Button animated='vertical' color='green' onClick={() => this.onFinish(this.props.delivery)} /*disabled={this.state.account!==this.state.sender}*/ loading={this.state.loading}>
                         <Button.Content hidden>Finish</Button.Content>
                         <Button.Content visible>
-                          <Icon name='finish' />
+                          <Icon name=' handshake' />
                         </Button.Content>
                       </Button>
                      ) : (
@@ -245,7 +245,7 @@ class DeliveryRow extends Component {
                         <Button animated='vertical' color='green' onClick={() => this.onAccept(this.props.delivery)} disabled={this.state.account!==this.state.receiver} loading={this.state.loading}>
                         <Button.Content hidden>Accept</Button.Content>
                         <Button.Content visible>
-                          <Icon name='accept' />
+                          <Icon name='check' />
                         </Button.Content>
                       </Button>
                        ) : (
@@ -254,7 +254,7 @@ class DeliveryRow extends Component {
                           <Button animated='vertical' color='green' onClick={() => this.onResponse(this.props.delivery)} /*disabled={this.state.account!==this.state.sender}*/ loading={this.state.loading}>
                           <Button.Content hidden>Response</Button.Content>
                           <Button.Content visible>
-                            <Icon name='response' />
+                            <Icon name='stopwatch' />
                           </Button.Content>
                         </Button>
                          ) : (
@@ -263,16 +263,13 @@ class DeliveryRow extends Component {
                             <Button animated='vertical' color='green' onClick={() => this.onChallenge(this.props.delivery)} disabled={this.state.account!==this.state.receiver} loading={this.state.loading}>
                             <Button.Content hidden>Challenge</Button.Content>
                             <Button.Content visible>
-                              <Icon name='challenge' />
+                              <Icon name='file alternate outline' />
                             </Button.Content>
                           </Button>
                            ):(
-                            <Button animated='vertical' color='green' onClick={() => this.onView} disabled loading={this.state.loading}>
-                            <Button.Content hidden>Finished or not created</Button.Content>
-                            <Button.Content visible>
-                              <Icon name='send' />
-                            </Button.Content>
-                          </Button>
+                            <Button  color='green' onClick={() => this.onView} disabled loading={this.state.loading}>
+                            Firmado
+                            </Button>
                            )
                          )
                        )
