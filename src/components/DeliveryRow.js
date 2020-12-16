@@ -17,6 +17,8 @@ class DeliveryRow extends Component {
     sender: '',
     loading: false,
     errorMessage: '',
+    term: '',
+    ahora: ''
   };
 
   componentDidMount = async () => {
@@ -24,8 +26,9 @@ class DeliveryRow extends Component {
     let receiver = await deliveryContract.methods.receiver().call();
     let start = await deliveryContract.methods.start().call();
     let state = await deliveryContract.methods.getState(this.props.delivery).call();
+    let term = await deliveryContract.methods.term().call();
     const accounts = await web3.eth.getAccounts();
-    let sender = await deliveryContract.methods.sender.call();
+    let sender = await deliveryContract.methods.sender().call();
     let d = new Date(0);
     d.setUTCSeconds(start);
     start = dateFormat(d, "dd/mm/yyyy HH:MM");
@@ -35,7 +38,8 @@ class DeliveryRow extends Component {
       start: start,
       state: state,
       account: accounts[0],
-      sender: sender
+      sender: sender,
+      term: term
     });
   }
 
@@ -233,7 +237,7 @@ class DeliveryRow extends Component {
                      
                      this.state.state==='accepted'?
                      (
-                      <Button animated='vertical' color='green' onClick={() => this.onFinish(this.props.delivery)} /*disabled={this.state.account!==this.state.sender}*/ loading={this.state.loading}>
+                      <Button animated='vertical' color='green' onClick={() => this.onFinish(this.props.delivery)} disabled={(this.state.account!==this.state.sender)/*||(this.state.ahora.setUTCSeconds(Date.now)>this.state.start+this.state.term)*/} loading={this.state.loading}>
                         <Button.Content hidden>Finish</Button.Content>
                         <Button.Content visible>
                           <Icon name=' handshake' />
@@ -242,7 +246,7 @@ class DeliveryRow extends Component {
                      ) : (
                        this.state.state==='responsed'? 
                        (
-                        <Button animated='vertical' color='green' onClick={() => this.onAccept(this.props.delivery)} disabled={this.state.account!==this.state.receiver} loading={this.state.loading}>
+                        <Button animated='vertical' color='green' onClick={() => this.onAccept(this.props.delivery)} disabled={(this.state.account!==this.state.receiver)/*||(this.state.ahora.setUTCSeconds(Date.now)>this.state.start+this.state.term)*/} loading={this.state.loading}>
                         <Button.Content hidden>Accept</Button.Content>
                         <Button.Content visible>
                           <Icon name='check' />
@@ -251,7 +255,7 @@ class DeliveryRow extends Component {
                        ) : (
                          this.state.state==='challenged'?
                          (
-                          <Button animated='vertical' color='green' onClick={() => this.onResponse(this.props.delivery)} /*disabled={this.state.account!==this.state.sender}*/ loading={this.state.loading}>
+                          <Button animated='vertical' color='green' onClick={() => this.onResponse(this.props.delivery)} disabled={(this.state.account!==this.state.sender)/*||(this.state.ahora.setUTCSeconds(Date.now)>this.state.start+this.state.term)*/} loading={this.state.loading}>
                           <Button.Content hidden>Response</Button.Content>
                           <Button.Content visible>
                             <Icon name='stopwatch' />
@@ -260,7 +264,7 @@ class DeliveryRow extends Component {
                          ) : (
                            this.state.state==='created'?
                            (
-                            <Button animated='vertical' color='green' onClick={() => this.onChallenge(this.props.delivery)} disabled={this.state.account!==this.state.receiver} loading={this.state.loading}>
+                            <Button animated='vertical' color='green' onClick={() => this.onChallenge(this.props.delivery)} disabled={(this.state.account!==this.state.receiver)/*||(this.state.ahora.setUTCSeconds(Date.now)>this.state.start+this.state.term)*/} loading={this.state.loading}>
                             <Button.Content hidden>Challenge</Button.Content>
                             <Button.Content visible>
                               <Icon name='file alternate outline' />

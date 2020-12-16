@@ -109,7 +109,7 @@ class DeliveryNew extends Component {
           </Form.Field>
 
           <Message error header="ERROR" content={this.state.errorMessage} />
-          <Button   color='green'     primary loading={this.state.loading}>
+          <Button   color="green"      loading={this.state.loading}>
             ¡Enviar!
           </Button>
         </Form>
