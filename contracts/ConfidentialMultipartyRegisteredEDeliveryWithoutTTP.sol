@@ -983,6 +983,7 @@ contract ConfidentialMultipartyRegisteredEDeliveryWithoutTTP {
     uint public term;
     // Start time
     uint public start;
+    uint public plazo;
 
     // Constructor funcion to create the delivery
     constructor (address _sender, address _receiver, bytes _c1, bytes _c2, bytes _ya, bytes _g, bytes _p, uint _term) public payable {
@@ -1000,6 +1001,7 @@ contract ConfidentialMultipartyRegisteredEDeliveryWithoutTTP {
         p = _p;
         start = now; // now = block.timestamp
         term = _term; // timeout term, in seconds
+        plazo= start+term;
     }
     
     function challenge(bytes _z1,bytes _z2, bytes _yb, bytes _c)public{
@@ -1109,14 +1111,14 @@ contract ConfidentialMultipartyRegisteredEDeliveryWithoutTTP {
         require(now > start+term,"There is still time to accept the contract");
         require(sender==msg.sender, "who try to cancel the contract signature is not the proposer");
         require(estado[address(this)].state==State.created,"The process is not in the adequate state");
-        estado[address(this)].state==State.cancelled;
+        estado[address(this)].state=State.cancelled;
     }
     
     function cancelB() public {
         require(now > start+term,"There is still time to response the challenge");
         require(receiver==msg.sender, "who try to cancel the contract signature is not the receptor");
-        require(estado[address(this)].state==State.accepted,"The process is not in the adequate state");
-        estado[address(this)].state==State.cancelled;
+        require((estado[address(this)].state==State.accepted)||(estado[address(this)].state==State.created),"The process is not in the adequate state");
+        estado[address(this)].state=State.cancelled;
     }
 
     // getState() returns the state of a receiver in an string format

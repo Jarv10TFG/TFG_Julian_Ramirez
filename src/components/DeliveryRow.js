@@ -17,7 +17,7 @@ class DeliveryRow extends Component {
     sender: '',
     loading: false,
     errorMessage: '',
-    term: '',
+    plazo: '',
     ahora: ''
   };
 
@@ -26,20 +26,21 @@ class DeliveryRow extends Component {
     let receiver = await deliveryContract.methods.receiver().call();
     let start = await deliveryContract.methods.start().call();
     let state = await deliveryContract.methods.getState(this.props.delivery).call();
-    let term = await deliveryContract.methods.term().call();
+    let plazo = await deliveryContract.methods.plazo().call();
     const accounts = await web3.eth.getAccounts();
     let sender = await deliveryContract.methods.sender().call();
     let d = new Date(0);
+    let d2 =new Date(0);
     d.setUTCSeconds(start);
+    plazo = d2.setUTCSeconds(plazo);
     start = dateFormat(d, "dd/mm/yyyy HH:MM");
-
     this.setState({ 
       receiver: receiver,
       start: start,
       state: state,
       account: accounts[0],
       sender: sender,
-      term: term
+      plazo: plazo
     });
   }
 
@@ -195,6 +196,44 @@ class DeliveryRow extends Component {
     }
   };
 
+  onCancelA = async (contractAddress) =>{
+    this.setState({ loading: true, errorMessage: '' });
+    try{
+      let deliveryContract = notification(contractAddress);
+
+      const accounts = await web3.eth.getAccounts();
+
+      await deliveryContract.methods.cancelA().send({ from: accounts[0] });
+
+      // Refresh
+      alert('Contract cancelled!');
+      this.setState({ state: 'cancelled' });
+    } catch (err) {
+      this.setState({ errorMessage: err.message });
+    } finally {
+        this.setState({ loading: false });
+    }
+  };
+
+  onCancelB = async (contractAddress) =>{
+    this.setState({ loading: true, errorMessage: '' });
+    try{
+      let deliveryContract = notification(contractAddress);
+
+      const accounts = await web3.eth.getAccounts();
+
+      await deliveryContract.methods.cancelB().send({ from: accounts[0] });
+
+      // Refresh
+      alert('Contract cancelled!');
+      this.setState({ state: 'cancelled' });
+    } catch (err) {
+      this.setState({ errorMessage: err.message });
+    } finally {
+        this.setState({ loading: false });
+    }
+  };
+
   render() {
       return (// hay que poner 3 botones, uno para ver el contrato, otro para cancelA o B y otro para las funciones normales.
           <Table.Row>
@@ -223,8 +262,13 @@ class DeliveryRow extends Component {
                           this.state.state==='created'?
                           (
                             <Label as='a' color='green' horizontal>Created</Label>
-                          ):(
-                            <Label as='a' horizontal>-</Label>
+                          ) : (
+                            this.state.state==='cancelled'?
+                            (
+                              <Label as='a' color='red' horizontal>Cancelled</Label>
+                            ) : (
+                              <Label as='a' horizontal>-</Label>
+                              )
                           )
                         )
                       )
@@ -237,7 +281,7 @@ class DeliveryRow extends Component {
                      
                      this.state.state==='accepted'?
                      (
-                      <Button animated='vertical' color='green' onClick={() => this.onFinish(this.props.delivery)} disabled={(this.state.account!==this.state.sender)/*||(this.state.ahora.setUTCSeconds(Date.now)>this.state.start+this.state.term)*/} loading={this.state.loading}>
+                      <Button animated='vertical' color='green' onClick={() => this.onFinish(this.props.delivery)} disabled={(this.state.account!==this.state.sender)||(Date.now()>this.state.plazo)} loading={this.state.loading}>
                         <Button.Content hidden>Finish</Button.Content>
                         <Button.Content visible>
                           <Icon name=' handshake' />
@@ -246,7 +290,7 @@ class DeliveryRow extends Component {
                      ) : (
                        this.state.state==='responsed'? 
                        (
-                        <Button animated='vertical' color='green' onClick={() => this.onAccept(this.props.delivery)} disabled={(this.state.account!==this.state.receiver)/*||(this.state.ahora.setUTCSeconds(Date.now)>this.state.start+this.state.term)*/} loading={this.state.loading}>
+                        <Button animated='vertical' color='green' onClick={() => this.onAccept(this.props.delivery)} disabled={(this.state.account!==this.state.receiver)||(Date.now()>this.state.plazo)} loading={this.state.loading}>
                         <Button.Content hidden>Accept</Button.Content>
                         <Button.Content visible>
                           <Icon name='check' />
@@ -255,7 +299,7 @@ class DeliveryRow extends Component {
                        ) : (
                          this.state.state==='challenged'?
                          (
-                          <Button animated='vertical' color='green' onClick={() => this.onResponse(this.props.delivery)} disabled={(this.state.account!==this.state.sender)/*||(this.state.ahora.setUTCSeconds(Date.now)>this.state.start+this.state.term)*/} loading={this.state.loading}>
+                          <Button animated='vertical' color='green' onClick={() => this.onResponse(this.props.delivery)} disabled={(this.state.account!==this.state.sender)||(Date.now()>this.state.plazo)} loading={this.state.loading}>
                           <Button.Content hidden>Response</Button.Content>
                           <Button.Content visible>
                             <Icon name='stopwatch' />
@@ -263,45 +307,30 @@ class DeliveryRow extends Component {
                         </Button>
                          ) : (
                            this.state.state==='created'?
-                           (
-                            <Button animated='vertical' color='green' onClick={() => this.onChallenge(this.props.delivery)} disabled={(this.state.account!==this.state.receiver)/*||(this.state.ahora.setUTCSeconds(Date.now)>this.state.start+this.state.term)*/} loading={this.state.loading}>
+                           (                            
+                            <Button animated='vertical' color='green' onClick={() => this.onChallenge(this.props.delivery)} disabled={(this.state.account!==this.state.receiver)||(Date.now()>this.state.plazo)} loading={this.state.loading}>
                             <Button.Content hidden>Challenge</Button.Content>
                             <Button.Content visible>
                               <Icon name='file alternate outline' />
                             </Button.Content>
                           </Button>
-                           ):(
+                           ): (
+                            this.state.state==='cancelled'?
+                            (
+                             <Button  color='red' onClick={() => this.onView} disabled loading={this.state.loading}>
+                               Cancelado  
+                             </Button>
+                            ) : (
                             <Button  color='green' onClick={() => this.onView} disabled loading={this.state.loading}>
                             Firmado
                             </Button>
-                           )
-                         )
+                             )
+                          )
                        )
-                     
-                    )
-
-
-
-
-
-
-
-                   /* this.props.sent ? (
-                      <Button animated='vertical' color='blue' onClick={() => this.onFinish(this.props.delivery)} disabled={this.state.state!=='accepted'} loading={this.state.loading}>
-                        <Button.Content hidden>Finish</Button.Content>
-                        <Button.Content visible>
-                          <Icon name='send' />
-                        </Button.Content>
-                      </Button>
-                    ) : (
-                      <Button animated='vertical' color='blue' onClick={() => this.onChallenge(this.props.delivery)} disabled={this.state.state!=='created'} loading={this.state.loading}>
-                        <Button.Content hidden>Accept</Button.Content>
-                        <Button.Content visible>
-                          <Icon name='check' />
-                        </Button.Content>
-                    </Button>
-                    )*/
+                     )
+                    )          
                   }
+
                   <Link to={"/deliveries/"+this.props.delivery}>
                     <Button animated='vertical' color='green' onClick={this.onView}>
                       <Button.Content hidden>View</Button.Content>
@@ -310,6 +339,60 @@ class DeliveryRow extends Component {
                       </Button.Content>
                     </Button>
                   </Link>
+
+                  {
+                     
+                     this.state.state==='accepted'?
+                     (
+                      <Button animated='vertical' color='red' onClick={() => this.onCancelB(this.props.delivery)} disabled={(this.state.account!==this.state.sender)||(Date.now()<this.state.plazo)} loading={this.state.loading}>
+                        <Button.Content hidden>Cancel</Button.Content>
+                        <Button.Content visible>
+                          <Icon name=' file excel outline' />
+                        </Button.Content>
+                      </Button>
+                     ) : (
+                       this.state.state==='responsed'? 
+                       (
+                        <Button animated='vertical' color='red' onClick={() => this.onCancelA(this.props.delivery)} disabled={(this.state.account!==this.state.receiver)||(Date.now()<this.state.plazo)} loading={this.state.loading}>
+                        <Button.Content hidden>Cancel</Button.Content>
+                        <Button.Content visible>
+                          <Icon name='file excel outlinek' />
+                        </Button.Content>
+                      </Button>
+                       ) : (
+                         this.state.state==='challenged'?
+                         (
+                          <Button animated='vertical' color='red' onClick={() => this.onCancelB(this.props.delivery)} disabled={(this.state.account!==this.state.sender)||(Date.now()<this.state.plazo)} loading={this.state.loading}>
+                          <Button.Content hidden>Cancel</Button.Content>
+                          <Button.Content visible>
+                            <Icon name='file excel outline' />
+                          </Button.Content>
+                        </Button>
+                         ) : (
+                           this.state.state==='created'?
+                           (                           
+                            <Button animated='vertical' color='red' onClick={() => this.onCancelA(this.props.delivery)} disabled={(this.state.account!==this.state.receiver)||(Date.now()<this.state.plazo)} loading={this.state.loading}>
+                            <Button.Content hidden>Cancel</Button.Content>
+                            <Button.Content visible>
+                              <Icon name='file excel outline' />
+                            </Button.Content>
+                          </Button>
+                           ) : (
+                             this.state.state==='cancelled'?
+                             (
+                              <Button  color='red' onClick={() => this.onView} disabled loading={this.state.loading}>
+                                Cancelado  
+                              </Button>
+                             ) : (
+                            <Button  color='green' onClick={() => this.onView} disabled loading={this.state.loading}>
+                              Firmado
+                            </Button>
+                           )
+                         )
+                       )
+                       )
+                    )          
+                  }
                   <Message error header="ERROR" content={this.state.errorMessage} hidden={!this.state.errorMessage} />
               </Table.Cell>
           </Table.Row>
