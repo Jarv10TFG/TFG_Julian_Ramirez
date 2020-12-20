@@ -1,0 +1,23 @@
+{
+  "files": {
+    "main.js": "/TFG_Julian_Ramirez/static/js/main.3bfdf893.chunk.js",
+    "main.js.map": "/TFG_Julian_Ramirez/static/js/main.3bfdf893.chunk.js.map",
+    "runtime-main.js": "/TFG_Julian_Ramirez/static/js/runtime-main.39368121.js",
+    "runtime-main.js.map": "/TFG_Julian_Ramirez/static/js/runtime-main.39368121.js.map",
+    "static/css/2.d195229b.chunk.css": "/TFG_Julian_Ramirez/static/css/2.d195229b.chunk.css",
+    "static/js/2.c27e3dba.chunk.js": "/TFG_Julian_Ramirez/static/js/2.c27e3dba.chunk.js",
+    "static/js/2.c27e3dba.chunk.js.map": "/TFG_Julian_Ramirez/static/js/2.c27e3dba.chunk.js.map",
+    "index.html": "/TFG_Julian_Ramirez/index.html",
+    "precache-manifest.eedd834b6bac192a4bb93a469a00719a.js": "/TFG_Julian_Ramirez/precache-manifest.eedd834b6bac192a4bb93a469a00719a.js",
+    "service-worker.js": "/TFG_Julian_Ramirez/service-worker.js",
+    "static/css/2.d195229b.chunk.css.map": "/TFG_Julian_Ramirez/static/css/2.d195229b.chunk.css.map",
+    "static/js/2.c27e3dba.chunk.js.LICENSE.txt": "/TFG_Julian_Ramirez/static/js/2.c27e3dba.chunk.js.LICENSE.txt",
+    "static/media/semantic.min.css": "/TFG_Julian_Ramirez/static/media/outline-icons.ef60a4f6.woff"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.39368121.js",
+    "static/css/2.d195229b.chunk.css",
+    "static/js/2.c27e3dba.chunk.js",
+    "static/js/main.3bfdf893.chunk.js"
+  ]
+}
