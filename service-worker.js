@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js");
 
 importScripts(
-  "/TFG_Julian_Ramirez/precache-manifest.5eb55bf0fca710e62c50244b29bc9abb.js"
+  "/TFG_Julian_Ramirez/precache-manifest.191310fc8ae862a0625c16033973af26.js"
 );
 
 self.addEventListener('message', (event) => {
