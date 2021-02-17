@@ -1,8 +1,8 @@
 {
-  "name": "PatentConfidentialEDeliveryWithoutTTP",
+  "name": "TFG_Julian_Ramirez",
   "version": "1.0.0",
-  "description": "Protocol pel 2n article de IEEE Access (eDelivery confidencial multipart sense TTP) per la patent, amb interfície web ReactJS",
-  "homepage": "https://secomuib.github.io/PatentConfidentialEDeliveryWithoutTTP/",
+  "description": "Trabajo de fin de grado de Ingeniería telemática de Julián Alejandro Ramírez Vélez",
+  "homepage": "https://Jarv10TFG.github.io/TFG_Julian_Ramirez/",
   "main": "start.js",
   "directories": {
     "doc": "doc",
@@ -21,14 +21,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/secomuib/PatentConfidentialEDeliveryWithoutTTP.git"
+    "url": "git+https://github.com/Jarv10TFG/TFG_Julian_Ramirez.git"
   },
   "keywords": [
     "ethereum",
     "solidity",
     "blockchain"
   ],
-  "author": "Seguretat i comerç electrònic (SECOM)",
+  "author": "Juliá Ramírez Vélez",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/secomuib/PatentConfidentialEDeliveryWithoutTTP/issues"

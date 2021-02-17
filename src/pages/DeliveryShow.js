@@ -65,7 +65,7 @@ class DeliveryShow extends Component {
 
       // Calcular MESSAGE
       if (w) {
-        // TODO: El sender no té Xb
+        
         let xb = bigInt(variables.xb.substr(2), 16);
 
         let wBig = bigInt(w.substr(2), 16);
@@ -186,14 +186,8 @@ class DeliveryShow extends Component {
               value={this.state.p}
             />
           </Form.Field>
-
-          <Form.Field>
-            <label>q of ElGamal algorithm</label>
-            <Input
-              readOnly
-              value={variables.q}
-            />
-          </Form.Field>
+            
+         
 
           <Form.Field>
             <label>g of ElGamal algorithm</label>

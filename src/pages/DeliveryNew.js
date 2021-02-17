@@ -15,7 +15,7 @@ class DeliveryNew extends Component {
     deposit: '',
     loading: false,
     errorMessage: ''
-  };
+   };
 
   onSubmit = async event => {
     event.preventDefault();
@@ -29,14 +29,11 @@ class DeliveryNew extends Component {
         let p = bigInt(variables.p.substr(2), 16)
         let g = bigInt(variables.g.substr(2), 16)
         // Random number r
-        //let r = bigInt.randBetween(2, p.minus(1)); este sería el correcto, por ahora usamos r de variables
-
+        
         let r = bigInt(variables.r.substr(2),16)
 
         // ya public key of A
         let ya = bigInt(variables.ya.substr(2), 16)
-        //xa private key of A
-        //let xa = bigInt(variables.xa.substr(2),16)
         
         let messageSentBuffer = Buffer.from(this.state.message, 'utf8');
         let messageSent = bigInt(messageSentBuffer.toString('hex'), 16);
@@ -109,7 +106,7 @@ class DeliveryNew extends Component {
           </Form.Field>
 
           <Message error header="ERROR" content={this.state.errorMessage} />
-          <Button   color='green'     primary loading={this.state.loading}>
+          <Button   color="green"      loading={this.state.loading}>
             ¡Enviar!
           </Button>
         </Form>

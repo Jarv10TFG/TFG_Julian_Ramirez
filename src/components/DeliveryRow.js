@@ -17,6 +17,8 @@ class DeliveryRow extends Component {
     sender: '',
     loading: false,
     errorMessage: '',
+    plazo: '',
+    ahora: ''
   };
 
   componentDidMount = async () => {
@@ -24,49 +26,28 @@ class DeliveryRow extends Component {
     let receiver = await deliveryContract.methods.receiver().call();
     let start = await deliveryContract.methods.start().call();
     let state = await deliveryContract.methods.getState(this.props.delivery).call();
+    let plazo = await deliveryContract.methods.plazo().call();
     const accounts = await web3.eth.getAccounts();
-    let sender = await deliveryContract.methods.sender.call();
+    let sender = await deliveryContract.methods.sender().call();
     let d = new Date(0);
+    let d2 =new Date(0);
     d.setUTCSeconds(start);
+    plazo = d2.setUTCSeconds(plazo);
     start = dateFormat(d, "dd/mm/yyyy HH:MM");
-
     this.setState({ 
       receiver: receiver,
       start: start,
       state: state,
       account: accounts[0],
-      sender: sender
+      sender: sender,
+      plazo: plazo
     });
   }
 
   onView = async () => {
-    /*const campaign = Campaign(this.props.address);
-
-    const accounts = await web3.eth.getAccounts();
-    await campaign.methods.approveRequest(this.props.id).send({
-      from: accounts[0]
-    });*/
+    
   };
-  /*
-  Estados que necesito: onChallenge, onResponse, onAccept, onFinish.
-
-  Variables generadas al crear un contrato:
-    Message(C), r, yA, g, xA, p, c1 y c2
-  Variables que necesita cada estado:
   
-  -onChallenge:
-    copiar el onAccept de Miquel y adaptarlo un poquito.
-
-  -onResponse
-    copiar el onFinish de Miquel y modificarlo un poquito.
-
-  -onAccept
-    Aquí no se requiere ninguna variable. En este punto el firmante B debería poder leer el contrato en claro y en caso de que lo quiera aceptar solamente tiene que pulsar el botón
-    y cambiar el estado del contrato de en respuesta a aceptado.
-
-  -onFinish
-    Resolver duda con Magdalena acerca de que significa M pero en principio tampoco debería enviar ninguna variable(el hecho de darle al botón para finalizar el contrato significa que lo ha firmado).
-  */
   onChallenge = async (contractAddress) => {//solo puede acceder al onAccept el firmante B
 
     let c, s, z1, z2;
@@ -77,17 +58,17 @@ class DeliveryRow extends Component {
       let deliveryContract = notification(contractAddress);
 
       const accounts = await web3.eth.getAccounts();
-
+      
       //clave privada de b xb
       let xb = bigInt(variables.xb.substr(2), 16);
       //clave publica de b yb
       let yb = bigInt(variables.yb.substr(2), 16);
-
+      
       let p = bigInt((await deliveryContract.methods.p().call()).substr(2), 16);
       let g = bigInt((await deliveryContract.methods.g().call()).substr(2), 16);
       let ya = bigInt((await deliveryContract.methods.ya().call()).substr(2), 16);
       let q = p.minus(1).divide(2);
-
+    
       // VARIABLES FOR ACCEPT()
       // Generation of challenge number c
       c = bigInt.randBetween(2, q.minus(1));      // Pot ser mes curt, meitat de bits
@@ -122,12 +103,12 @@ class DeliveryRow extends Component {
       let deliveryContract = notification(contractAddress);
 
       const accounts = await web3.eth.getAccounts();
-
-      // La r la tendríamos que obtener como propiedad desde deliveryNew
+      
+     
       let r = bigInt(variables.r.substr(2), 16)
-      // La xa la tendríamos que obtener como propiedad desde deliveryNew
+      
       let xa = bigInt(variables.xa.substr(2), 16)
-
+      
       let p = bigInt((await deliveryContract.methods.p().call()).substr(2), 16);
       let c = bigInt((await deliveryContract.methods.c().call()).substr(2), 16);
       let z1 = bigInt((await deliveryContract.methods.z1().call()).substr(2),16);
@@ -137,8 +118,7 @@ class DeliveryRow extends Component {
       let xb = z2.multiply(z4.mod(p));
 
       // VARIABLES FOR FINISH()
-      //const w = r.add(c.mod(p).multiply(xb.mod(p)).mod(p));
-      
+            
       w =  r.add(c.multiply(xb.mod(p)));
       
       await deliveryContract.methods.response("0x"+w.toString(16)).send({ from: accounts[0] });
@@ -191,12 +171,55 @@ class DeliveryRow extends Component {
     }
   };
 
+  onCancelA = async (contractAddress) =>{
+    this.setState({ loading: true, errorMessage: '' });
+    try{
+      let deliveryContract = notification(contractAddress);
+
+      const accounts = await web3.eth.getAccounts();
+
+      await deliveryContract.methods.cancelA().send({ from: accounts[0] });
+
+      // Refresh
+      alert('Contract cancelled!');
+      this.setState({ state: 'cancelled' });
+    } catch (err) {
+      this.setState({ errorMessage: err.message });
+    } finally {
+        this.setState({ loading: false });
+    }
+  };
+
+  onCancelB = async (contractAddress) =>{
+    this.setState({ loading: true, errorMessage: '' });
+    try{
+      let deliveryContract = notification(contractAddress);
+
+      const accounts = await web3.eth.getAccounts();
+
+      await deliveryContract.methods.cancelB().send({ from: accounts[0] });
+
+      // Refresh
+      alert('Contract cancelled!');
+      this.setState({ state: 'cancelled' });
+    } catch (err) {
+      this.setState({ errorMessage: err.message });
+    } finally {
+        this.setState({ loading: false });
+    }
+  };
+
   render() {
-      return (// hay que poner 3 botones, uno para ver el contrato, otro para cancelA o B y otro para las funciones normales.
+      return (
           <Table.Row>
               <Table.Cell>{this.props.id+1}</Table.Cell>
               <Table.Cell>{this.props.delivery}</Table.Cell>
-              <Table.Cell>{this.state.receiver}</Table.Cell>
+              { this.props.sent ?(
+                <Table.Cell>{this.state.receiver}</Table.Cell>
+                ):(
+                  <Table.Cell>{this.state.sender}</Table.Cell>
+                )    
+              }
               <Table.Cell>{this.state.start}</Table.Cell>
               <Table.Cell>
                 {
@@ -219,8 +242,13 @@ class DeliveryRow extends Component {
                           this.state.state==='created'?
                           (
                             <Label as='a' color='green' horizontal>Created</Label>
-                          ):(
-                            <Label as='a' horizontal>-</Label>
+                          ) : (
+                            this.state.state==='cancelled'?
+                            (
+                              <Label as='a' color='red' horizontal>Cancelled</Label>
+                            ) : (
+                              <Label as='a' horizontal>-</Label>
+                              )
                           )
                         )
                       )
@@ -233,7 +261,7 @@ class DeliveryRow extends Component {
                      
                      this.state.state==='accepted'?
                      (
-                      <Button animated='vertical' color='green' onClick={() => this.onFinish(this.props.delivery)} /*disabled={this.state.account!==this.state.sender}*/ loading={this.state.loading}>
+                      <Button animated='vertical' color='green' onClick={() => this.onFinish(this.props.delivery)} disabled={(this.state.account!==this.state.sender)||(Date.now()>this.state.plazo)} loading={this.state.loading}>
                         <Button.Content hidden>Finish</Button.Content>
                         <Button.Content visible>
                           <Icon name=' handshake' />
@@ -242,7 +270,7 @@ class DeliveryRow extends Component {
                      ) : (
                        this.state.state==='responsed'? 
                        (
-                        <Button animated='vertical' color='green' onClick={() => this.onAccept(this.props.delivery)} disabled={this.state.account!==this.state.receiver} loading={this.state.loading}>
+                        <Button animated='vertical' color='green' onClick={() => this.onAccept(this.props.delivery)} disabled={(this.state.account!==this.state.receiver)||(Date.now()>this.state.plazo)} loading={this.state.loading}>
                         <Button.Content hidden>Accept</Button.Content>
                         <Button.Content visible>
                           <Icon name='check' />
@@ -251,7 +279,7 @@ class DeliveryRow extends Component {
                        ) : (
                          this.state.state==='challenged'?
                          (
-                          <Button animated='vertical' color='green' onClick={() => this.onResponse(this.props.delivery)} /*disabled={this.state.account!==this.state.sender}*/ loading={this.state.loading}>
+                          <Button animated='vertical' color='green' onClick={() => this.onResponse(this.props.delivery)} disabled={(this.state.account!==this.state.sender)||(Date.now()>this.state.plazo)} loading={this.state.loading}>
                           <Button.Content hidden>Response</Button.Content>
                           <Button.Content visible>
                             <Icon name='stopwatch' />
@@ -259,45 +287,30 @@ class DeliveryRow extends Component {
                         </Button>
                          ) : (
                            this.state.state==='created'?
-                           (
-                            <Button animated='vertical' color='green' onClick={() => this.onChallenge(this.props.delivery)} disabled={this.state.account!==this.state.receiver} loading={this.state.loading}>
+                           (                            
+                            <Button animated='vertical' color='green' onClick={() => this.onChallenge(this.props.delivery)} disabled={(this.state.account!==this.state.receiver)||(Date.now()>this.state.plazo)} loading={this.state.loading}>
                             <Button.Content hidden>Challenge</Button.Content>
                             <Button.Content visible>
                               <Icon name='file alternate outline' />
                             </Button.Content>
                           </Button>
-                           ):(
+                           ): (
+                            this.state.state==='cancelled'?
+                            (
+                             <Button  color='red' onClick={() => this.onView} disabled loading={this.state.loading}>
+                               Cancelado  
+                             </Button>
+                            ) : (
                             <Button  color='green' onClick={() => this.onView} disabled loading={this.state.loading}>
                             Firmado
                             </Button>
-                           )
-                         )
+                             )
+                          )
                        )
-                     
-                    )
-
-
-
-
-
-
-
-                   /* this.props.sent ? (
-                      <Button animated='vertical' color='blue' onClick={() => this.onFinish(this.props.delivery)} disabled={this.state.state!=='accepted'} loading={this.state.loading}>
-                        <Button.Content hidden>Finish</Button.Content>
-                        <Button.Content visible>
-                          <Icon name='send' />
-                        </Button.Content>
-                      </Button>
-                    ) : (
-                      <Button animated='vertical' color='blue' onClick={() => this.onChallenge(this.props.delivery)} disabled={this.state.state!=='created'} loading={this.state.loading}>
-                        <Button.Content hidden>Accept</Button.Content>
-                        <Button.Content visible>
-                          <Icon name='check' />
-                        </Button.Content>
-                    </Button>
-                    )*/
+                     )
+                    )          
                   }
+
                   <Link to={"/deliveries/"+this.props.delivery}>
                     <Button animated='vertical' color='green' onClick={this.onView}>
                       <Button.Content hidden>View</Button.Content>
@@ -306,6 +319,60 @@ class DeliveryRow extends Component {
                       </Button.Content>
                     </Button>
                   </Link>
+
+                  {
+                     
+                     this.state.state==='accepted'?
+                     (
+                      <Button animated='vertical' color='red' onClick={() => this.onCancelB(this.props.delivery)} disabled={(this.state.account!==this.state.receiver)||(Date.now()<this.state.plazo)} loading={this.state.loading}>
+                        <Button.Content hidden>Cancel</Button.Content>
+                        <Button.Content visible>
+                          <Icon name=' file excel outline' />
+                        </Button.Content>
+                      </Button>
+                     ) : (
+                       this.state.state==='responsed'? 
+                       (
+                        <Button animated='vertical' color='red' onClick={() => this.onCancelA(this.props.delivery)} disabled={(this.state.account!==this.state.sender)||(Date.now()<this.state.plazo)} loading={this.state.loading}>
+                        <Button.Content hidden>Cancel</Button.Content>
+                        <Button.Content visible>
+                          <Icon name='file excel outlinek' />
+                        </Button.Content>
+                      </Button>
+                       ) : (
+                         this.state.state==='challenged'?
+                         (
+                          <Button animated='vertical' color='red' onClick={() => this.onCancelB(this.props.delivery)} disabled={(this.state.account!==this.state.receiver)||(Date.now()<this.state.plazo)} loading={this.state.loading}>
+                          <Button.Content hidden>Cancel</Button.Content>
+                          <Button.Content visible>
+                            <Icon name='file excel outline' />
+                          </Button.Content>
+                        </Button>
+                         ) : (
+                           this.state.state==='created'?
+                           (                           
+                            <Button animated='vertical' color='red' onClick={() => this.onCancelA(this.props.delivery)} disabled={(this.state.account!==this.state.sender)||(Date.now()<this.state.plazo)} loading={this.state.loading}>
+                            <Button.Content hidden>Cancel</Button.Content>
+                            <Button.Content visible>
+                              <Icon name='file excel outline' />
+                            </Button.Content>
+                          </Button>
+                           ) : (
+                             this.state.state==='cancelled'?
+                             (
+                              <Button  color='red' onClick={() => this.onView} disabled loading={this.state.loading}>
+                                Cancelado  
+                              </Button>
+                             ) : (
+                            <Button  color='green' onClick={() => this.onView} disabled loading={this.state.loading}>
+                              Firmado
+                            </Button>
+                           )
+                         )
+                       )
+                       )
+                    )          
+                  }
                   <Message error header="ERROR" content={this.state.errorMessage} hidden={!this.state.errorMessage} />
               </Table.Cell>
           </Table.Row>
